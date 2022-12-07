@@ -2,7 +2,7 @@ const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-const collisionCanvas = document.getElementyById('collisionCanvas');
+const collisionCanvas = document.getElementById('collisionCanvas');
 const collisionCtx = collisionCanvas.getContext('2d');
 collisionCanvas.width = window.innerWidth;
 collisionCanvas.height = window.innerHeight;
@@ -55,9 +55,37 @@ class Raven {
     draw(){
         collisionCtx.fillStyle = this.color;
         collisionCtx.fillRect(this.x, this.y, this.width, this.height);
-        collisionCtx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.width,
-        this.height, this.x, this.y, this.width, this.height);
+        collisionCtx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.
+        spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
     }
+}
+let explosions = [];
+class Explosion {
+    constructor(x, y, size){
+        this.image = new Image();
+        this.image.src = 'boom.png';
+        this.spriteWidth = 200;
+        this.spriteHeight = 179;
+        this.size = size;
+        this.x = x;
+        this.y = y;
+        this.frame = 0;
+        this.sound = new Audio();
+        this.sound.src = 'boom.wav';
+        this.timeSinceLastFrame = 0;
+        this.frameInterval = 200;
+    }
+    update(deltatime){
+        if (this.frame === 0) this.sound.play();
+        this.timeSinceLastFrame += deltatime;
+        if (this.timeSinceLastFrame > this.frameInterval){
+            this.frame++;
+        }
+    }
+    draw(){
+        ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.
+        spriteWidth, this.spriteHeight, this.x, this.y, this.size, this.size);
+    };
 }
 
 function drawScore(){
