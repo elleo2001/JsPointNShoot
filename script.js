@@ -35,7 +35,8 @@ class Raven {
         this.flapInterval = Math.random() * 50 + 50;
         this.randomColors = [Math.floor(Math.random() * 255), Math.floor(Math.random()
         * 255), Math.random(Math.floor() * 255)];
-        this.color = ''
+        this.color = 'rgb(' + this.randomColors[0] + ',' + this.randomColors[1] + ','
+        + this.randomColors[2] + ')';
     }
     update(deltatime){
         if (this.y < 0 || this.y > canvas.height - this.height){
@@ -52,8 +53,9 @@ class Raven {
         }
     }
     draw(){
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
-        ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.width,
+        collisionCtx.fillStyle = this.color;
+        collisionCtx.fillRect(this.x, this.y, this.width, this.height);
+        collisionCtx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.width,
         this.height, this.x, this.y, this.width, this.height);
     }
 }
@@ -68,7 +70,7 @@ function drawScore(){
 window.addEventListener('click', function(e){
     const detectPixelColor = ctx.getImageData(e.x, e.y, 1, 1);
 
-})
+});
 
 function animate(timestamp){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -78,6 +80,9 @@ function animate(timestamp){
     if (timeToNextRaven > ravenInterval){
         ravens.push(new Raven());
         timeToNextRaven = 0;
+        ravens.sort(function(a,b){
+            return a.width - b.width;
+        });
     };
     drawScore();
     [...ravens].forEach(object => object.update(deltatime));
